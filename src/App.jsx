@@ -5,7 +5,7 @@ const commit = import.meta.env.VITE_COMMIT_SHA?.slice(0, 7) || 'local'
 const buildTime = import.meta.env.VITE_BUILD_TIME || 'local'
 
 export const cars = [
-  { id: 1, name: 'Fiat Egea', type: 'Economy', price: 30, seats: 5, fuel: 'Diesel', gear: 'Manual', icon: '🚗' },
+  { id: 1, name: 'Fiat Egea Comfort', type: 'Economy', price: 30, seats: 5, fuel: 'Diesel', gear: 'Manual', icon: '🚗' },
   { id: 2, name: 'Renault Clio', type: 'Economy', price: 28, seats: 5, fuel: 'Petrol', gear: 'Automatic', icon: '🚙' },
   { id: 3, name: 'Toyota Corolla', type: 'Comfort', price: 45, seats: 5, fuel: 'Hybrid', gear: 'Automatic', icon: '🚘' },
   { id: 4, name: 'VW Passat', type: 'Comfort', price: 55, seats: 5, fuel: 'Diesel', gear: 'Automatic', icon: '🚖' },
