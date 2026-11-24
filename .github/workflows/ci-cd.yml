@@ -1,0 +1,82 @@
+# Basit bir CI/CD pipeline: TEST -> BUILD -> DEPLOY
+name: CI/CD Pipeline
+
+# Pipeline ne zaman tetiklenir?
+on:
+  push:
+    branches: [main]        # main'e her push'ta
+  pull_request:
+    branches: [main]        # main'e açılan her PR'da (sadece test + build)
+  workflow_dispatch:        # GitHub arayüzünden elle çalıştırma butonu
+
+# GitHub Pages'e deploy için gerekli izinler
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Aynı anda iki deploy çakışmasın
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # 1) CONTINUOUS INTEGRATION - Testler
+  test:
+    name: 🧪 Test
+    runs-on: ubuntu-latest           # GitHub'ın bulutta verdiği geçici sanal makine
+    steps:
+      - name: Kodu çek
+        uses: actions/checkout@v4
+
+      - name: Node.js kur
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Bağımlılıkları yükle
+        run: npm ci
+
+      - name: Testleri çalıştır
+        run: npm test
+
+  # 2) BUILD - Uygulamayı derle (testler geçerse)
+  build:
+    name: 📦 Build
+    needs: test                      # test başarısızsa build hiç çalışmaz
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Production build al
+        run: npm run build
+        env:
+          VITE_COMMIT_SHA: ${{ github.sha }}
+          VITE_BUILD_TIME: ${{ github.event.head_commit.timestamp || github.event.pull_request.updated_at }}
+
+      - name: Build çıktısını artifact olarak yükle
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  # 3) CONTINUOUS DEPLOYMENT - Buluta yayınla (sadece main'e push'ta)
+  deploy:
+    name: 🚀 Deploy
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: GitHub Pages'e deploy et
+        id: deployment
+        uses: actions/deploy-pages@v4
