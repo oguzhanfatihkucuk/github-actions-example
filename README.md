@@ -1,31 +1,28 @@
-# GitHub Actions CI/CD Demo
+# QuickRent – GitHub Actions CI/CD Demo
 
-Basit bir React (Vite) uygulaması + GitHub Actions ile **Test → Build → Deploy** pipeline'ı.
-Her `main` push'unda uygulama otomatik test edilir, derlenir ve GitHub Pages'e yayınlanır.
+A simple one-page car rental site built with React (Vite), shipped by a GitHub Actions **Test → Build → Deploy** pipeline.
+Every push to `main` is automatically tested, built and published to GitHub Pages.
 
-## Lokal çalıştırma
+**Live site:** https://oguzhanfatihkucuk.github.io/github-actions-example/
+
+## Run locally
 ```bash
 npm install
-npm run dev     # geliştirme sunucusu
-npm test        # testler
+npm run dev     # development server
+npm test        # run tests
 npm run build   # production build (dist/)
 ```
 
 ## Pipeline
-Dosya: `.github/workflows/ci-cd.yml`
+File: `.github/workflows/ci-cd.yml`
 
-| Aşama | Ne yapar | Ne zaman |
+| Stage | What it does | When |
 |---|---|---|
-| 🧪 Test | `npm ci` + `npm test` | Her push ve PR |
-| 📦 Build | `npm run build`, çıktıyı artifact olarak saklar | Test geçerse |
-| 🚀 Deploy | GitHub Pages'e yayınlar | Sadece `main`'e push |
+| 🧪 Test | `npm ci` + `npm test` | Every push and PR |
+| 📦 Build | `npm run build`, stores the output as an artifact | If tests pass |
+| 🚀 Deploy | Publishes to GitHub Pages | Only on push to `main` |
 
-## İlk kurulum
-1. GitHub'da yeni bir repo aç ve projeyi push'la.
-2. Repo → **Settings → Pages → Source: GitHub Actions** seç.
-3. **Actions** sekmesinde pipeline'ı izle. Bitince site: `https://<kullanici>.github.io/<repo>/`
-
-## Sunum demo senaryosu
-1. **Başarılı akış:** `src/App.jsx` içinde başlığı değiştir (testteki metni de güncelle) → push → Actions'ta 3 job'un sırayla yeşil olmasını göster → sitede yeni başlık ve yeni commit hash'i görünür.
-2. **Hatalı akış:** Sadece `App.jsx`'teki başlığı değiştir, testi güncelleme → push → Test job'u kırmızı olur, Build ve Deploy **hiç çalışmaz**. Canlı site bozulmaz.
-3. **Pull Request:** Yeni branch'te değişiklik yap, PR aç → Test ve Build çalışır, Deploy atlanır; PR sayfasında check sonuçları görünür.
+## Demo scenarios
+1. **Happy path:** Change the hero heading in `src/App.jsx` (and update the matching text in `src/App.test.jsx`) → push → watch all 3 jobs turn green → the site shows the new heading and the new commit hash in the footer.
+2. **Failing pipeline:** Change only the heading in `App.jsx`, leave the test as is → push → the Test job fails, Build and Deploy **never run**. The live site stays intact.
+3. **Pull request:** Make a change on a new branch and open a PR → Test and Build run, Deploy is skipped; check results appear on the PR page.

@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  // GitHub Pages alt klasörde (kullanici.github.io/repo-adi/) yayınlandığı için göreli yol
+  // Relative base path because GitHub Pages serves the site from a subfolder (user.github.io/repo-name/)
   base: './',
   test: {
     environment: 'jsdom',

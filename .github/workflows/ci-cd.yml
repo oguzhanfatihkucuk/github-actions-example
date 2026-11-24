@@ -1,73 +1,76 @@
-# Basit bir CI/CD pipeline: TEST -> BUILD -> DEPLOY
+# A simple CI/CD pipeline: TEST -> BUILD -> DEPLOY
 name: CI/CD Pipeline
 
-# Pipeline ne zaman tetiklenir?
+# When does the pipeline run?
 on:
   push:
-    branches: [main]        # main'e her push'ta
+    branches: [main]        # on every push to main
   pull_request:
-    branches: [main]        # main'e açılan her PR'da (sadece test + build)
-  workflow_dispatch:        # GitHub arayüzünden elle çalıştırma butonu
+    branches: [main]        # on every PR to main (test + build only)
+  workflow_dispatch:        # manual "Run workflow" button in the GitHub UI
 
-# GitHub Pages'e deploy için gerekli izinler
+# Permissions required to deploy to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Aynı anda iki deploy çakışmasın
+# Prevent two deployments from running at the same time
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  # 1) CONTINUOUS INTEGRATION - Testler
+  # 1) CONTINUOUS INTEGRATION - run the tests
   test:
     name: 🧪 Test
-    runs-on: ubuntu-latest           # GitHub'ın bulutta verdiği geçici sanal makine
+    runs-on: ubuntu-latest           # a fresh cloud VM provided by GitHub
     steps:
-      - name: Kodu çek
+      - name: Check out the code
         uses: actions/checkout@v4
 
-      - name: Node.js kur
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
-      - name: Bağımlılıkları yükle
+      - name: Install dependencies
         run: npm ci
 
-      - name: Testleri çalıştır
+      - name: Run tests
         run: npm test
 
-  # 2) BUILD - Uygulamayı derle (testler geçerse)
+  # 2) BUILD - compile the app (only if tests pass)
   build:
     name: 📦 Build
-    needs: test                      # test başarısızsa build hiç çalışmaz
+    needs: test                      # if tests fail, build never runs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out the code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Production build al
+      - name: Create production build
         run: npm run build
         env:
           VITE_COMMIT_SHA: ${{ github.sha }}
           VITE_BUILD_TIME: ${{ github.event.head_commit.timestamp || github.event.pull_request.updated_at }}
 
-      - name: Build çıktısını artifact olarak yükle
+      - name: Upload build output as an artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
-  # 3) CONTINUOUS DEPLOYMENT - Buluta yayınla (sadece main'e push'ta)
+  # 3) CONTINUOUS DEPLOYMENT - publish to the cloud (only on push to main)
   deploy:
     name: 🚀 Deploy
     needs: build
@@ -77,6 +80,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: GitHub Pages'e deploy et
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
