@@ -15,9 +15,10 @@ describe('Car Rental Site', () => {
   it('filters cars by category', () => {
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: 'Luxury' }))
+    const luxuryCars = cars.filter((car) => car.type === 'Luxury')
     const cards = screen.getAllByTestId('car-card')
-    expect(cards).toHaveLength(1)
-    expect(cards[0]).toHaveTextContent('BMW 5 Series')
+    expect(cards).toHaveLength(luxuryCars.length)
+    luxuryCars.forEach((car, i) => expect(cards[i]).toHaveTextContent(car.name))
   })
 
   it('calculates the total price', () => {
