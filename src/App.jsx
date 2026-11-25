@@ -10,10 +10,10 @@ export const cars = [
   { id: 3, name: 'Toyota Corolla', type: 'Comfort', price: 45, seats: 5, fuel: 'Hybrid', gear: 'Automatic', icon: '🚘' },
   { id: 4, name: 'VW Passat', type: 'Comfort', price: 55, seats: 5, fuel: 'Diesel', gear: 'Automatic', icon: '🚖' },
   { id: 5, name: 'BMW 5 Series', type: 'Luxury', price: 110, seats: 5, fuel: 'Diesel', gear: 'Automatic', icon: '🏎️' },
-  { id: 6, name: 'Deneme11', type: 'Family', price: 70, seats: 8, fuel: 'Diesel', gear: 'Manual', icon: '🚐' },
+  { id: 6, name: 'Supra', type: 'Family', price: 70, seats: 8, fuel: 'Diesel', gear: 'Manual', icon: '🚐' },
   { id: 7, name: 'Mercedes 5 Series', type: 'Luxury', price: 24, seats: 6, fuel: 'Diesel', gear: 'Automatic', icon: '🏎️' },
   { id: 8, name: 'Scoda Superb', type: 'Family', price: 140, seats: 6, fuel: 'Diesel', gear: 'Manual', icon: '🚐' },
-  { id: 9, name: 'Fiat Egea', type: 'Family', price: 100, seats: 5, fuel: 'Gasoline', gear: 'Automatic', icon: '🚐' },
+  { id: 9, name: 'Honda Civic', type: 'Economy', price: 35, seats: 5, fuel: 'Gasoline', gear: 'Automatic', icon: '🚐' },
 ]
 
 const categories = ['All', 'Economy', 'Comfort', 'Luxury', 'Family']
