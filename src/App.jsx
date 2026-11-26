@@ -14,6 +14,7 @@ export const cars = [
   { id: 7, name: 'Mercedes 5 Series', type: 'Luxury', price: 24, seats: 6, fuel: 'Diesel', gear: 'Automatic', icon: '🏎️' },
   { id: 8, name: 'Scoda Superb', type: 'Family', price: 140, seats: 6, fuel: 'Diesel', gear: 'Manual', icon: '🚐' },
   { id: 9, name: 'Honda Civic', type: 'Economy', price: 35, seats: 5, fuel: 'Gasoline', gear: 'Automatic', icon: '🚐' },
+  { id: 10, name: 'Audi A6', type: 'Luxury', price: 120, seats: 5, fuel: 'Diesel', gear: 'Automatic', icon: '🏎️' },
 ]
 
 const categories = ['All', 'Economy', 'Comfort', 'Luxury', 'Family']
